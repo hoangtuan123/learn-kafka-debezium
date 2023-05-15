@@ -1,0 +1,56 @@
+version: '2'
+services:
+  zookeeper:
+    image: quay.io/debezium/zookeeper
+    ports:
+     - 2181:2181
+     - 2888:2888
+     - 3888:3888
+  kafka:
+    image: quay.io/debezium/kafka
+    ports:
+     - 9092:9092
+    links:
+     - zookeeper
+    environment:
+     - ZOOKEEPER_CONNECT=zookeeper:2181
+  postgres:
+    image: postgres
+    ports:
+     - 5432:5432
+    command:
+      - "postgres"
+      - "-c"
+      - "wal_level=logical"
+    environment:
+     - POSTGRES_USER=admin
+     - POSTGRES_PASSWORD=admin
+  apicurio:
+    image: apicurio/apicurio-registry-mem:2.2.5.Final
+    ports:
+     - 8080:8080
+  connect:
+    image: quay.io/debezium/connect
+    ports:
+     - 8083:8083
+    links:
+     - kafka
+     - postgres
+     - apicurio
+    environment:
+     - BOOTSTRAP_SERVERS=kafka:9092
+     - GROUP_ID=1
+     - CONFIG_STORAGE_TOPIC=my_connect_configs
+     - OFFSET_STORAGE_TOPIC=my_connect_offsets
+     - STATUS_STORAGE_TOPIC=my_connect_statuses
+     - ENABLE_APICURIO_CONVERTERS=true
+  kafka-ui:
+    container_name: kafka-ui
+    image: provectuslabs/kafka-ui:latest
+    ports:
+      - 8081:8080
+    environment:
+     - DYNAMIC_CONFIG_ENABLED=true
+     - KAFKA_CLUSTERS_0_NAME=kafka
+     - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=kafka:9092
+     - KAFKA_CLUSTERS_0_ZOOKEEPER=zookeeper:2181

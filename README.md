@@ -3,7 +3,7 @@
 - docker
 - docker-compose
 
-## Required CDC
+## Required
 - Postgres:
   - wal_level=logical
   - create publication and use it in kafka connect

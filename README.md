@@ -11,34 +11,34 @@
   - connector have permission in Postgres
   - connector use publication created before
 
-
 ## Run
 ### Init system
-```
+```bash
 docker-compose up
 ```
-### Init DB
-```
+### Create DB
+```sql
 create database sourcea;
 create database desb;
 ```
-### Init tables on database by
+### Create tables on database by
 Create souce tables
-```
+```bash
 create-source-db.sql
 ```
 Create des tables
-```
+```bash
 create-des-db.sql
 ```
 ### Create connector
-Use API of Kafka Connect
+*Use API of Kafka Connect*
+
 Required:
-- source connector: as publisher catch change stream and send to topic
-- sink connector: take data from topic and insert to table des
+- source connector: as publisher catch `change stream` and send to `topic`
+- sink connector: take data from topic and `insert/update/delete` to `table` des
 
 **Create source connector**
-```
+```bash
 curl --location 'http://localhost:8083/connectors' \
 --header 'Content-Type: application/json' \
 --data '{
@@ -73,7 +73,7 @@ curl --location 'http://localhost:8083/connectors' \
 }'
 ```
 **Create sink connector**
-```
+```bash
 curl --location 'http://localhost:8083/connectors' \
 --header 'Content-Type: application/json' \
 --data '{
@@ -105,15 +105,15 @@ curl --location 'http://localhost:8083/connectors' \
 ```
 ## Testing
 With connector setup
-```
+```bash
  "snapshot.mode": "initial",
 ```
 The CDC will run snapshot and publish all records in source db and send to topics as config in source connector
 We also can test by insert a new records to source db:
-```
+```sql
 insert into test1 values ('1', 'test for 1');
 ```
 and test on des db:
-```
+```sql
 select * from test1;
 ```

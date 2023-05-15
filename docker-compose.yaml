@@ -23,8 +23,8 @@ services:
       - "-c"
       - "wal_level=logical"
     environment:
-     - POSTGRES_USER=admin
-     - POSTGRES_PASSWORD=admin
+     - POSTGRES_USER=dbzuser
+     - POSTGRES_PASSWORD=dbzpass
   apicurio:
     image: apicurio/apicurio-registry-mem:2.2.5.Final
     ports:

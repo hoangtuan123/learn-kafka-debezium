@@ -2,6 +2,7 @@
 ## Setup
 - docker
 - docker-compose
+
 ## Required CDC
 - Postgres:
   - wal_level=logical
@@ -9,6 +10,8 @@
 - Kafka connect
   - connector have permission in Postgres
   - connector use publication created before
+
+
 ## Run
 ### Init system
 ```
